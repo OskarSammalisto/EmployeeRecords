@@ -4,8 +4,10 @@ public class Employer {
 
     String name;
     String industry;
+    int id;
 
-    public Employer(String name, String industry) {
+    public Employer(int id,String name, String industry) {
+        this.id = id;
         this.name = name;
         this.industry = industry;
     }
@@ -16,5 +18,21 @@ public class Employer {
 
     public String getIndustry() {
         return industry;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

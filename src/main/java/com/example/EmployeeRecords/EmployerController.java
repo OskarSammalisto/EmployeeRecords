@@ -1,12 +1,10 @@
 package com.example.EmployeeRecords;
 
 import com.google.gson.Gson;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/employer")
@@ -14,40 +12,50 @@ public class EmployerController {
 
     private Gson gson = new Gson();
     private ArrayList<String> employerList = new ArrayList<>();
+    private EmployerDatabase employerDatabase = new EmployerDatabase();
 
     @RequestMapping(method = RequestMethod.GET)
-    public ArrayList<String> getEmployerList (@RequestParam(value = "id", defaultValue = "-1") int id,
-                                              @RequestParam(value = "name", defaultValue = " ") String name,
-                                              @RequestParam(value = "industry", defaultValue = " ") String industry) {
-        ArrayList<String> returnList = new ArrayList<>();
-        for(String string : employerList) {
-            Employer emp = gson.fromJson(string, Employer.class);
-            if(emp.getId() == id || emp.getName().equalsIgnoreCase(name) || emp.getIndustry().equalsIgnoreCase(industry)){
-                returnList.add(string);
-            }
-            else if(id == -1 && name.equalsIgnoreCase(" ") && industry.equalsIgnoreCase(" ")) {
-                returnList.add(string);
-            }
-        }
+    public List<Employer> getEmployerList (@RequestParam(value = "id", defaultValue = "-1") int id,
+                                           @RequestParam(value = "name", defaultValue = "") String name,
+                                           @RequestParam(value = "industry", defaultValue = "") String industry) {
 
-        return returnList;
+
+        return employerDatabase.getEmployers(id, name, industry);
+
+
+//        ArrayList<String> returnList = new ArrayList<>();
+//        for(String string : employerList) {
+//            Employer emp = gson.fromJson(string, Employer.class);
+//            if(emp.getId() == id || emp.getName().equalsIgnoreCase(name) || emp.getIndustry().equalsIgnoreCase(industry)){
+//                returnList.add(string);
+//            }
+//            else if(id == -1 && name.equalsIgnoreCase(" ") && industry.equalsIgnoreCase(" ")) {
+//                returnList.add(string);
+//            }
+//        }
+//
+//        return returnList;
     }
 
     @RequestMapping(method =  RequestMethod.POST)
-    public String postEmployer(@RequestParam(value = "id", defaultValue = "-1") int id,
-                               @RequestParam(value = "name", defaultValue = "Name") String name,
-                               @RequestParam(value = "industry", defaultValue = "Profession") String industry) {
+    public String postEmployer(@RequestBody Employer employer) {
 
-        for(String string : employerList) {
-            Employer emp = gson.fromJson(string, Employer.class);
-            if(emp.getId() == id) return "Id: " +emp.getId() +". already exists";
-        }
-        if(id < 1) return "Please enter a valid id!";
+        if(employerDatabase.checkEmployerId(employer)) return "Id already exists";
 
-        Employer employer = new Employer (id, name, industry);
+        if(employer.getId() <= 0) return "Please select a valid Id!";
 
-        String employeeJson = gson.toJson(employer);
-        employerList.add(employeeJson);
+        employerDatabase.addEmployer(employer);
+
+//        for(String string : employerList) {
+//            Employer emp = gson.fromJson(string, Employer.class);
+//            if(emp.getId() == id) return "Id: " +emp.getId() +". already exists";
+//        }
+//        if(id < 1) return "Please enter a valid id!";
+//
+//        Employer employer = new Employer (id, name, industry);
+//
+//        String employeeJson = gson.toJson(employer);
+//        employerList.add(employeeJson);
 
 //        File employeeRecord = new File("employeeRecord.txt");
 //
@@ -61,44 +69,52 @@ public class EmployerController {
 //        }
 
 
-        return employeeJson;
+        return "Employer: " +employer.getName() +" added under Id: " +employer.getId() +".";
 
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
     public String deleteEmployer(@RequestParam(value = "id", defaultValue = "-1") int id) {
-        for(String string :employerList) {
-            Employer emp = gson.fromJson(string, Employer.class);
-            if(emp.getId() == id) {
-                String name = emp.getName();
-                employerList.remove(string);
-                return "Employer " +name +" with the Id: " +id +". deleted!";
-            }
+
+        if(employerDatabase.deleteEmployer(id)) {
+            return "Employer deleted!";
         }
+//        for(String string :employerList) {
+//            Employer emp = gson.fromJson(string, Employer.class);
+//            if(emp.getId() == id) {
+//                String name = emp.getName();
+//                employerList.remove(string);
+//                return "Employer " +name +" with the Id: " +id +". deleted!";
+//            }
+//        }
 
         return "Id not found!";
 
     }
 
     @RequestMapping(method = RequestMethod.PATCH)
-    public String patchEmployer(@RequestParam(value = "id", defaultValue = "-1") int id,
+    public String patchEmployer(@RequestParam(value = "id") int id,
                                 @RequestParam(value = "name", defaultValue = " ") String name,
                                 @RequestParam(value = "industry", defaultValue = " ")String industry) {
 
-        for(String string :employerList) {
-            Employer emp = gson.fromJson(string, Employer.class);
-            if(emp.getId() == id) {
+        if(id <= 0) return "Please enter a valid Id!";
 
-                if(!name.equalsIgnoreCase(" ")) emp.setName(name);
-                if(!industry.equalsIgnoreCase(" ")) emp.setIndustry(industry);
+        if(employerDatabase.patchEmployer(id, name, industry)) return "Employer info updated!";
 
-                employerList.remove(string);
-                employerList.add(gson.toJson(emp));
-
-
-                return "Employer updated! \r\n" +gson.toJson(emp);
-            }
-        }
+//        for(String string :employerList) {
+//            Employer emp = gson.fromJson(string, Employer.class);
+//            if(emp.getId() == id) {
+//
+//                if(!name.equalsIgnoreCase(" ")) emp.setName(name);
+//                if(!industry.equalsIgnoreCase(" ")) emp.setIndustry(industry);
+//
+//                employerList.remove(string);
+//                employerList.add(gson.toJson(emp));
+//
+//
+//                return "Employer updated! \r\n" +gson.toJson(emp);
+//            }
+//        }
 
 
 

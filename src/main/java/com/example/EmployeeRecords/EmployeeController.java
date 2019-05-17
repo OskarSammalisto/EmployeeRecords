@@ -83,13 +83,17 @@ public class EmployeeController {
 
     @RequestMapping(method = RequestMethod.DELETE)
     public String deleteEmployee(@RequestParam(value = "id", defaultValue = "-1") int id) {
-        for(String string :employeeList) {
-            Employee emp = gson.fromJson(string, Employee.class);
-            if(emp.getId() == id) {
-                String name = emp.getName();
-                employeeList.remove(string);
-                return "Employee " +name +" with the Id: " +id +". deleted!";
-            }
+//        for(String string :employeeList) {
+//            Employee emp = gson.fromJson(string, Employee.class);
+//            if(emp.getId() == id) {
+//                String name = emp.getName();
+//                employeeList.remove(string);
+//                return "Employee " +name +" with the Id: " +id +". deleted!";
+//            }
+//        }
+
+        if(employeeDatabase.deleteEmployee(id)) {
+            return "Employee deleted";
         }
 
         return "Id not found!";
@@ -98,26 +102,31 @@ public class EmployeeController {
 
 
     @RequestMapping(method = RequestMethod.PATCH)
-    public String patchEmployee(@RequestParam(value = "id", defaultValue = "-1") int id,
-                                @RequestParam(value = "name", defaultValue = " ") String name,
-                                @RequestParam(value = "profession", defaultValue = " ")String profession,
+    public String patchEmployee(@RequestParam(value = "id") int id,
+                                @RequestParam(value = "name", defaultValue = "") String name,
+                                @RequestParam(value = "profession", defaultValue = "")String profession,
                                 @RequestParam(value = "age", defaultValue = "-1")int age) {
 
-        for(String string :employeeList) {
-            Employee emp = gson.fromJson(string, Employee.class);
-            if(emp.getId() == id) {
+        if(id <= 0) return "Please enter a valid Id!";
 
-                if(!name.equalsIgnoreCase(" ")) emp.setName(name);
-                if(!profession.equalsIgnoreCase(" ")) emp.setProfession(profession);
-                if(age >= 0) emp.setAge(age);
-
-                employeeList.remove(string);
-                employeeList.add(gson.toJson(emp));
+        if(employeeDatabase.patchEmployee(id, name, profession, age)) return "Employee info updated!";
 
 
-                return "Employee updated! \r\n" +gson.toJson(emp);
-            }
-        }
+//        for(String string :employeeList) {
+//            Employee emp = gson.fromJson(string, Employee.class);
+//            if(emp.getId() == id) {
+//
+//                if(!name.equalsIgnoreCase(" ")) emp.setName(name);
+//                if(!profession.equalsIgnoreCase(" ")) emp.setProfession(profession);
+//                if(age >= 0) emp.setAge(age);
+//
+//                employeeList.remove(string);
+//                employeeList.add(gson.toJson(emp));
+//
+//
+//                return "Employee updated! \r\n" +gson.toJson(emp);
+//            }
+//        }
 
 
 

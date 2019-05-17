@@ -2,9 +2,9 @@ package com.example.EmployeeRecords;
 
 public class Employer {
 
-    String name;
-    String industry;
-    int id;
+    private String name;
+    private String industry;
+    private int id;
 
     public Employer(int id,String name, String industry) {
         this.id = id;

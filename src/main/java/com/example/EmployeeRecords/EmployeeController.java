@@ -81,8 +81,8 @@ public class EmployeeController {
         return employeeDatabase.getEmployees(id, name, profession, age);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public String deleteEmployee(@RequestParam(value = "id", defaultValue = "-1") int id) {
+    @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
+    public String deleteEmployee(@PathVariable("id") int id) {
 //        for(String string :employeeList) {
 //            Employee emp = gson.fromJson(string, Employee.class);
 //            if(emp.getId() == id) {
@@ -101,8 +101,8 @@ public class EmployeeController {
     }
 
 
-    @RequestMapping(method = RequestMethod.PATCH)
-    public String patchEmployee(@RequestParam(value = "id") int id,
+    @RequestMapping(value = "/{id}",method = RequestMethod.PATCH)
+    public String patchEmployee(@PathVariable(value = "id") int id,
                                 @RequestParam(value = "name", defaultValue = "") String name,
                                 @RequestParam(value = "profession", defaultValue = "")String profession,
                                 @RequestParam(value = "age", defaultValue = "-1")int age) {

@@ -73,8 +73,8 @@ public class EmployerController {
 
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
-    public String deleteEmployer(@RequestParam(value = "id", defaultValue = "-1") int id) {
+    @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
+    public String deleteEmployer(@PathVariable(value = "id") int id) {
 
         if(employerDatabase.deleteEmployer(id)) {
             return "Employer deleted!";
@@ -92,8 +92,8 @@ public class EmployerController {
 
     }
 
-    @RequestMapping(method = RequestMethod.PATCH)
-    public String patchEmployer(@RequestParam(value = "id") int id,
+    @RequestMapping(value = "/{id}",method = RequestMethod.PATCH)
+    public String patchEmployer(@PathVariable(value = "id") int id,
                                 @RequestParam(value = "name", defaultValue = " ") String name,
                                 @RequestParam(value = "industry", defaultValue = " ")String industry) {
 
@@ -120,5 +120,6 @@ public class EmployerController {
 
         return "Employer id not found!";
     }
+    
 
 }

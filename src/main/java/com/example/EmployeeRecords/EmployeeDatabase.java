@@ -1,11 +1,13 @@
 package com.example.EmployeeRecords;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,11 +16,13 @@ import java.util.List;
 public class EmployeeDatabase {
 
     private List<Employee> employeeDatabase;
+
     private Gson gson = new Gson();
 
     public EmployeeDatabase() {
 
-        this.employeeDatabase = new ArrayList<>();
+        this.employeeDatabase = loadEmployeeList();
+
 
     }
 
@@ -53,7 +57,7 @@ public class EmployeeDatabase {
 
     public void addEmployee(Employee employee) {
         employeeDatabase.add(employee);
-       // writeToTextFile();
+        writeToTextFile();
     }
 
     public boolean deleteEmployee(int id) {
@@ -61,6 +65,7 @@ public class EmployeeDatabase {
         for(Employee emp : employeeDatabase) {
             if(emp.getId() == id) {
                 employeeDatabase.remove(emp);
+                writeToTextFile();
                 return true;
             }
         }
@@ -80,10 +85,10 @@ public class EmployeeDatabase {
                 if(age >= 0) {
                     emp.setAge(age);
                 }
+                writeToTextFile();
                 return true;
             }
         }
-
       return false;
     }
 
@@ -106,23 +111,26 @@ public class EmployeeDatabase {
 
     }
 
-//    private ArrayList<Employee> loadEmployeeList() {
-//
-//        File employeeRecord = new File("employeeRecord.txt");
-//
-//
-//        try {
-//            String employees = new String(Files.readAllBytes(Paths.get("employeeRecord.txt")), "UTF-8");
+    private ArrayList<Employee> loadEmployeeList() {
+
+       // File employeeRecord = new File("employeeRecord.txt");
+        Type type = new TypeToken<List<Employee>>() {}.getType();
+        ArrayList<Employee> returnList = new ArrayList<>();
+
+        try {
+            String employees = new String(Files.readAllBytes(Paths.get("employeeRecord.txt")), "UTF-8");
+            if(!employees.isEmpty())returnList = gson.fromJson(employees, type);
+
 //            ArrayList<Employee> returnList = gson.fromJson(employees, Employee.class);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//
-//        return
-//
-//    }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return returnList;
+
+    }
 
 
 }

@@ -113,7 +113,7 @@ public class EmployeeDatabase {
 
     private ArrayList<Employee> loadEmployeeList() {
 
-        File employeeRecord = new File("employeeRecord.txt");
+       // File employeeRecord = new File("employeeRecord.txt");
         Type type = new TypeToken<List<Employee>>() {}.getType();
         ArrayList<Employee> returnList = new ArrayList<>();
 

@@ -1,14 +1,25 @@
 package com.example.EmployeeRecords;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EmployerDatabase {
 
     private List<Employer> employerDatabase;
+    private Gson gson = new Gson();
 
     public EmployerDatabase() {
-        this.employerDatabase = new ArrayList<>();
+        this.employerDatabase = loadEmployerList();
     }
 
     public List<Employer> getEmployers(int id, String name, String industry) {
@@ -41,6 +52,7 @@ public class EmployerDatabase {
 
     public void addEmployer(Employer employer) {
         employerDatabase.add(employer);
+        writeToTextFile();
 
     }
 
@@ -49,6 +61,7 @@ public class EmployerDatabase {
         for(Employer emp : employerDatabase) {
             if(emp.getId() == id) {
                 employerDatabase.remove(emp);
+                writeToTextFile();
                 return true;
             }
         }
@@ -65,11 +78,51 @@ public class EmployerDatabase {
                 if(!industry.equals("")) {
                     emp.setIndustry(industry);
                 }
+                writeToTextFile();
                 return true;
             }
         }
 
         return false;
+    }
+
+    private void writeToTextFile() {
+        ArrayList<String> jsonemployerList = new ArrayList<>();
+        for(Employer employer : employerDatabase) {
+            String emp = gson.toJson(employer, Employer.class);
+            jsonemployerList.add(emp);
+        }
+
+        File employerRecord = new File("employerRecord.txt");
+
+        try {
+            PrintWriter out = new PrintWriter(new FileWriter(employerRecord, false));
+            out.println(jsonemployerList);
+            out.close();
+        }catch (Exception e) {
+            System.out.println("error writing to text file");
+        }
+    }
+
+    private ArrayList<Employer> loadEmployerList() {
+
+       // File employerRecord = new File("employerRecord.txt");
+        Type type = new TypeToken<List<Employer>>() {}.getType();
+        ArrayList<Employer> returnList = new ArrayList<>();
+
+        try {
+            String employeer = new String(Files.readAllBytes(Paths.get("employerRecord.txt")), "UTF-8");
+            if(!employeer.isEmpty())returnList = gson.fromJson(employeer, type);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+        return returnList;
+
     }
 
 }

@@ -1,6 +1,5 @@
 package com.example.EmployeeRecords;
 
-import java.util.List;
 
 public class Employer {
 

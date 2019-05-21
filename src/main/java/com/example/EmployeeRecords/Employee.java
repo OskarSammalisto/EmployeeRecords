@@ -1,6 +1,5 @@
 package com.example.EmployeeRecords;
 
-import java.io.File;
 
 public class Employee {
 
@@ -10,7 +9,7 @@ public class Employee {
     private int age;
 
 
-   // File employee = new File("employeeRecord.txt");
+
 
     public Employee(int id, String name, String profession, int age) {
         this.id = id;

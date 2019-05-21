@@ -1,1 +1,1 @@
-[{"name":"Coop","industry":"Store","id":2}]
+[{"name":"Coop Extra","industry":" ","id":2}, {"name":"Lidl","industry":"Store","id":3}]

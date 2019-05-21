@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -106,12 +107,11 @@ public class EmployerDatabase {
 
     private ArrayList<Employer> loadEmployerList() {
 
-       // File employerRecord = new File("employerRecord.txt");
         Type type = new TypeToken<List<Employer>>() {}.getType();
         ArrayList<Employer> returnList = new ArrayList<>();
 
         try {
-            String employeer = new String(Files.readAllBytes(Paths.get("employerRecord.txt")), "UTF-8");
+            String employeer = new String(Files.readAllBytes(Paths.get("employerRecord.txt")), StandardCharsets.UTF_8);
             if(!employeer.isEmpty())returnList = gson.fromJson(employeer, type);
 
 

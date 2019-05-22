@@ -3,6 +3,7 @@ package com.example.EmployeeRecords;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/employee")
@@ -51,20 +52,20 @@ public class EmployeeController {
     }
 
 
-    @RequestMapping(value = "/{id}",method = RequestMethod.PATCH)
-    public String patchEmployee(@PathVariable(value = "id") int id,
-                                @RequestParam(value = "name", defaultValue = "") String name,
-                                @RequestParam(value = "profession", defaultValue = "")String profession,
-                                @RequestParam(value = "age", defaultValue = "-1")int age) {
-
-        if(id <= 0) return "Please enter a valid Id!";
-
-        if(employeeDatabase.patchEmployee(id, name, profession, age)) return "Employee info updated!";
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    public Employee PatchEmployee(@PathVariable int id,
+                                  @RequestBody  Map<String, Object> employeeMap) {
+        return employeeDatabase.patchEmployeeWithMap(id, employeeMap);
+    }
 
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public Employee PutEmployee(@PathVariable int id,
+                             @RequestBody Employee employee) {
 
+        if(employeeDatabase.putEmployee(id, employee)) return employee;
 
-        return "Employee id not found!";
+    return null;
     }
 
 }

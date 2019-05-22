@@ -2,6 +2,7 @@ package com.example.EmployeeRecords;
 
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/employer")
@@ -34,6 +35,7 @@ public class EmployerController {
 
     }
 
+
     @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
     public String deleteEmployer(@PathVariable(value = "id") int id) {
 
@@ -45,18 +47,34 @@ public class EmployerController {
 
     }
 
-    @RequestMapping(value = "/{id}",method = RequestMethod.PATCH)
-    public String patchEmployer(@PathVariable(value = "id") int id,
-                                @RequestParam(value = "name", defaultValue = " ") String name,
-                                @RequestParam(value = "industry", defaultValue = " ")String industry) {
-
-        if(id <= 0) return "Please enter a valid Id!";
-
-        if(employerDatabase.patchEmployer(id, name, industry)) return "Employer info updated!";
-
-
-        return "Employer id not found!";
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    public Employer PatchEmployer(@PathVariable int id,
+                                  @RequestBody Map<String, Object> employerMap) {
+        return employerDatabase.patchEmployerWithMap(id, employerMap);
     }
+
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public Employer PutEmployer(@PathVariable int id,
+                                @RequestBody Employer employer) {
+
+        if(employerDatabase.putEmployer(id, employer)) return employer;
+
+        return null;
+    }
+
+//    @RequestMapping(value = "/{id}",method = RequestMethod.PATCH)
+//    public String patchEmployer(@PathVariable(value = "id") int id,
+//                                @RequestParam(value = "name", defaultValue = " ") String name,
+//                                @RequestParam(value = "industry", defaultValue = " ")String industry) {
+//
+//        if(id <= 0) return "Please enter a valid Id!";
+//
+//        if(employerDatabase.patchEmployer(id, name, industry)) return "Employer info updated!";
+//
+//
+//        return "Employer id not found!";
+//    }
     
 
 }

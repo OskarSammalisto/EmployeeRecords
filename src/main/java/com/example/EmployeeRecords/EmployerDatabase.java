@@ -1,5 +1,6 @@
 package com.example.EmployeeRecords;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -13,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class EmployerDatabase {
 
@@ -69,22 +71,41 @@ public class EmployerDatabase {
         return false;
     }
 
-    public boolean patchEmployer(int id, String name, String industry) {
 
+    public boolean putEmployer(int id, Employer employer) {
         for(Employer emp : employerDatabase) {
             if(emp.getId() == id) {
-                if(!name.equals("")){
-                    emp.setName(name);
-                }
-                if(!industry.equals("")) {
-                    emp.setIndustry(industry);
-                }
+                employerDatabase.remove(emp);
+                employer.setId(emp.getId());
+                employerDatabase.add(employer);
                 writeToTextFile();
                 return true;
             }
         }
-
         return false;
+    }
+
+    public Employer patchEmployerWithMap(int id, Map<String, Object> employerMap) {
+        for(Employer emp : employerDatabase) {
+            if(emp.getId() == id) {
+
+
+                ObjectMapper mapper = new ObjectMapper();
+                Employer employer = mapper.convertValue(employerMap, Employer.class);
+               // System.out.println(employer.getName());
+
+                if (employer.getName() != null ) {
+                    emp.setName(employer.getName());
+                }
+                if (employer.getIndustry() != null) {
+                    emp.setIndustry(employer.getIndustry());
+                }
+
+
+                return emp;
+            }
+        }
+        return null;
     }
 
     private void writeToTextFile() {

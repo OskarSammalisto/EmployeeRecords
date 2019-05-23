@@ -1,7 +1,10 @@
 package com.example.EmployeeRecords;
 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 
 import java.io.File;
 import java.io.FileWriter;
@@ -13,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class EmployeeDatabase {
 
@@ -56,6 +60,7 @@ public class EmployeeDatabase {
         return false;
     }
 
+
     public void addEmployee(Employee employee) {
         employeeDatabase.add(employee);
         writeToTextFile();
@@ -73,24 +78,42 @@ public class EmployeeDatabase {
         return false;
     }
 
-    public boolean patchEmployee(int id, String name, String profession, int age) {
 
+    public boolean putEmployee(int id, Employee employee) {
         for(Employee emp : employeeDatabase) {
             if(emp.getId() == id) {
-                if(!name.equals("")){
-                    emp.setName(name);
-                }
-                if(!profession.equals("")) {
-                    emp.setProfession(profession);
-                }
-                if(age >= 0) {
-                    emp.setAge(age);
-                }
+                employeeDatabase.remove(emp);
+                employee.setId(emp.getId());
+                employeeDatabase.add(employee);
                 writeToTextFile();
                 return true;
             }
         }
-      return false;
+        return false;
+    }
+
+    public Employee patchEmployeeWithMap(int id, Map<String, Object> employeeMap) {
+        for(Employee emp : employeeDatabase) {
+            if(emp.getId() == id) {
+
+
+              ObjectMapper mapper = new ObjectMapper();
+              Employee employee = mapper.convertValue(employeeMap, Employee.class);
+
+              if (employee.getName() != null ) {
+                  emp.setName(employee.getName());
+              }
+              if (employee.getProfession() != null) {
+                  emp.setProfession(employee.getProfession());
+              }
+              if (employee.getAge() != 0) {
+                  emp.setAge(employee.getAge());
+              }
+
+                return emp;
+            }
+        }
+        return null;
     }
 
     private void writeToTextFile() {

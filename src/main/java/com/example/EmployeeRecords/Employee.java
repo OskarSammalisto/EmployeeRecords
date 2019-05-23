@@ -9,7 +9,7 @@ public class Employee {
     private int age;
 
 
-
+    public Employee() {}
 
     public Employee(int id, String name, String profession, int age) {
         this.id = id;
@@ -44,5 +44,9 @@ public class Employee {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

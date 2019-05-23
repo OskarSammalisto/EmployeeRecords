@@ -1,11 +1,17 @@
 package com.example.EmployeeRecords;
 
 
+
+
 public class Employer {
+
+
 
     private String name;
     private String industry;
     private int id;
+
+    public Employer() {}
 
     public Employer(int id,String name, String industry) {
         this.id = id;
@@ -36,4 +42,5 @@ public class Employer {
     public void setId(int id) {
         this.id = id;
     }
+
 }
